@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification
+	xmlns="https://github.com/vqmod/vqmod"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://github.com/vqmod/vqmod https://raw.githubusercontent.com/vqmod/vqmod/master/vqmod.xsd"
+	>
+	<id><![CDATA[[VQMOD] Google Analytics Events]]></id>
+	<version>0.1.0</version>
+	<vqmver>2.6.3</vqmver>
+	<author>kanenas.net (aka Nikolas Branis) - nbran@kanenas.net</author>
+	<file path="catalog/view/theme/*/template/common/" name="header.tpl" error="log">
+		<operation error="skip">
+			<search position="before"><![CDATA[</head>]]></search>
+			<add><![CDATA[
+<?php // kanenas: knns_head_google_analytics_events.xml (start) << ?>
+<script>
+// Gtag events when user clicks link with tel or mailto
+jQuery(document).ready(function () {
+	jQuery("[href*='tel:'], [href*='mailto:']").click(function(e) {
+		e.preventDefault();
+		var href = jQuery(this).attr('href');
+		// tel:
+		if (href.toLowerCase().indexOf("tel:") >= 0) {
+			eventCategory = 'Call';
+			eventLabel = href.replace('tel:', '');
+		}
+		// mailto:
+		if (href.toLowerCase().indexOf("mailto:") >= 0) {
+			eventCategory = 'Email';
+			eventLabel = href.replace('mailto:', '');
+		}
+		gtag('event', 'Click', {
+			'event_category': eventCategory,
+			'event_label': eventLabel
+		});
+		setTimeout(function() {
+			window.location = href;
+		}, 500);
+	});
+});
+// Contact form event
+/*
+jQuery( document).ready(function() {
+    document.addEventListener( 'occfmailsent', function( event ) {
+    	gtag('event', 'Submit', {
+			'event_category': 'Contact Form',
+			'event_label': 'Submit'
+		});
+    }, false );
+});
+*/
+</script>
+<?php // kanenas: knns_head_google_analytics_events.xml (end) << ?>
+			]]></add>
+		</operation>
+	</file>
+</modification>
